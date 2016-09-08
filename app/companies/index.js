@@ -24,8 +24,25 @@ export default class CompaniesView extends Component {
            'BANCO DO BRASIL SA',
            'BANCO DO BRASIL SA',
            'BANCO DO BRASIL SA'
-         ])
-       }
+         ]),
+         loginStatus:'Logging in...'
+       };
+
+    var loginHelper = require('../login_example.js');
+
+    loginHelper.login()
+      .then(function () {
+        handleLoginResponse('I am Logged In!');
+      })
+      .catch(function () {
+        handleLoginResponse('I FAILED to logged In :(');
+      });
+
+    var THIS = this;
+
+    function handleLoginResponse (resp) {
+      THIS.setState( { loginStatus: resp });
+    }
   }
 
   componentDidMount() {
@@ -36,6 +53,9 @@ export default class CompaniesView extends Component {
   render() {
     return (
       <View style={[styles.container]}>
+        <View style={[styles.infoBar, styles.flexCenter, styles.borderBottomLight]}>
+          <Text style={{color: '#9B9B9B', fontSize: 12}}>{this.state.loginStatus}</Text>
+        </View>
         <View style={{
             backgroundColor: 'white',
             height: 50,
@@ -45,6 +65,7 @@ export default class CompaniesView extends Component {
           <TextInput
             placeholder= "Search"
             style={styles.textInput}/>
+
         </View>
         <View style={[styles.infoBar, styles.flexCenter, styles.borderBottomLight]}>
           <Text style={{color: '#9B9B9B', fontSize: 12, fontWeight: '500', paddingRight: 3}}>654356</Text>
