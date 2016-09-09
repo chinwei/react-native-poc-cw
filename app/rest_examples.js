@@ -20,11 +20,11 @@
         };
         // END TODO
 
+        var tsRestService = require('./rest/fetch.rest.api.js');
+
         setupRest();
 
         function setupRest () {
-
-          var tsRestService = require('./rest/fetch.rest.api.js');
 
           var baseUrl = 'https://app.' + tsAppConfig.domain + ':' + tsAppConfig.restPort + tsAppConfig.restBaseUrl;
 
@@ -46,13 +46,26 @@
 
         function login() {
 
-          var tsAuthService = require('./rest/services/auth.service.js');
+            var tsAuthService = require('./rest/services/auth.service.js');
 
-            return tsAuthService.grantNewTokenOrRefreshToken('password', credentials.userName, credentials.password, credentials.subdomain, credentials.adminDataSourceId);
+            return tsAuthService.grantNewTokenOrRefreshToken('password', credentials.userName, credentials.password, credentials.subdomain, credentials.adminDataSourceId).then(function (result) {
+                tsRestService.configure().token(result['access_token']);
+                return result;
+            });
+        }
+
+        function getGoldenRecords () {
+
+            var tsMdmService = require('./rest/services/mdm.service.js');
+
+            var body = {"type":"mdmdiseaseGolden"};
+
+            return tsMdmService.processFreeformQuery(body, { pageSize:30 })
         }
 
         return {
-            login: login
+            login: login,
+            getGoldenRecords: getGoldenRecords
         };
     }
 

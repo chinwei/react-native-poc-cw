@@ -130,7 +130,14 @@
 
       if (AUTH_TOKEN && !options.noAuthHeader) {
         if (!options.headers) {
-          options.headers = {};
+          options.headers = {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          };
+
+            if (options.body) {
+                options.body = JSON.stringify(options.body);
+            }
         }
 
         options.headers['Authorization'] = AUTH_TOKEN;
@@ -185,7 +192,7 @@
       });
 
       if (result.body) {
-        if (result.headers['Content-Type'] && result.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+        if (result.headers && result.headers['Content-Type'] && result.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
           result.body = serialize(result.body);
         }
       }
